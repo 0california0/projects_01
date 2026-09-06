@@ -45,6 +45,8 @@ while running:
     # PLAYER 1
     pygame.draw.circle(screen, "red", (int(player_one_x), int(player_one_y)), r)
 
+
+    
     keys_player_1 = pygame.key.get_pressed()
     if keys_player_1[pygame.K_w]:
         velocity_y_player_1 = -player_speed
