@@ -15,8 +15,8 @@ turn_speed = 275*1.5 # 100
 brake_speed = 150 # 150
 accel_speed = 400 # 450 maybe better, but really not
 turn_rate = 180
-r = 5
-impact_zone_size = 60
+r = 20
+impact_zone_size = 60 # 90
 
 def move_towards(value, target, max_step):
     if value < target:
@@ -32,6 +32,7 @@ class Player:
         self.speed = player_speed
         self.lines = []
         self.impact_zone = []
+        self.impact_timer = 0
 
     def direction_input(self, pressed):
         up, down, left, right = self.keys
@@ -69,6 +70,7 @@ class Player:
         # self.collision_wall()
         collision = self.collision_wall()
         self.strings(collision)
+        self.impact_timer -= dt
 
     def collision_wall(self):
         collision = False
@@ -97,7 +99,7 @@ class Player:
 
     def strings(self, collision):
         if collision == True:
-            pygame.draw.circle(screen, '#f50000', self.pos, r*0.05) # Aufprall Effekt
+            self.impact_timer = 0.17
             # self.lines.append(pygame.math.Vector2(self.pos))
             for i in range(6):
                 self.lines.append(random.choice(self.impact_zone))
@@ -109,6 +111,8 @@ class Player:
             # x,y = self.pos
             pygame.draw.line(screen, self.color, line, self.pos, 2)
         pygame.draw.circle(surface, self.color, self.pos, r)
+        if self.impact_timer > 0:
+            pygame.draw.circle(surface, "#f85e5eb2", self.pos, r + 2, 3)
 #############################
 def line_distance(point, a, b):
     ab = b - a
