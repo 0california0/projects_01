@@ -9,6 +9,9 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
+# Text
+font = pygame.font.SysFont('Nunito', 32)
+
 # global player vaiables
 player_speed = 300*1.5
 turn_speed = 275*1.5 # 100
@@ -33,6 +36,8 @@ class Player:
         self.lines = []
         self.impact_zone = []
         self.impact_timer = 0
+        self.score = 0
+        self.has_lines = False
 
     def direction_input(self, pressed):
         up, down, left, right = self.keys
@@ -99,11 +104,12 @@ class Player:
 
     def strings(self, collision):
         if collision == True:
+            self.has_lines = True
             self.impact_timer = 0.17
             # self.lines.append(pygame.math.Vector2(self.pos))
             for i in range(6):
                 self.lines.append(random.choice(self.impact_zone))
-                print('running')
+                print('running')    
             print('test')
 
     def draw(self, surface):
@@ -127,6 +133,12 @@ def cut_lines(player, other):
         if line_distance(player.pos, line, other.pos) <= r:
             other.lines.remove(line)
 #############################
+def score(player, other):
+    if other.has_lines and not other.lines:
+        player.score += 1
+        other.has_lines = False
+        print('empty')
+
 def collision_player(a, b):
         delta = b.pos - a.pos
         distance = delta.length()
@@ -145,12 +157,12 @@ def collision_player(a, b):
 
 player_one = Player(
     (screen.get_width() / 3, screen.get_height() / 2),
-    "red",
+    (255, 0, 0),
     (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),
 )
 player_two = Player(
     (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "blue",
+    (0 ,0, 255),
     (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
 )
  
@@ -189,9 +201,15 @@ while running:
         for b in players:
             if a is not b:
                 cut_lines(a, b)
+                score(a, b)
  
     for player in players:
         player.draw(screen)
+
+    score_text = font.render(f"Score: {player_one.score}", True, player_one.color)
+    score_text_two = font.render(f"Score: {player_two.score}", True, player_two.color)
+    screen.blit(score_text, (10, 10))
+    screen.blit(score_text_two, (10, 40))
  
     pygame.display.flip()
  
