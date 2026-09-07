@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 # pygame setup
 pygame.init()
@@ -14,7 +15,7 @@ turn_speed = 275*1.5 # 100
 brake_speed = 150 # 150
 accel_speed = 400 # 450 maybe better, but really not
 turn_rate = 180
-r = 20
+r = 5
 
 def move_towards(value, target, max_step):
     if value < target:
@@ -64,32 +65,32 @@ class Player:
  
         self.pos += self.direction * self.speed * dt
         # self.collision_wall()
-        collision_splash = self.collision_wall()
-        self.strings(collision_splash)
+        collision = self.collision_wall()
+        self.strings(collision)
 
     def collision_wall(self):
-        collision_splash = False
+        collision = False
         if self.pos.x < r:
                 self.pos.x = r
                 self.direction.x *= -1
-                collision_splash = True
+                collision = True
         elif self.pos.x > screen.get_width() - r:
             self.pos.x = screen.get_width() - r
             self.direction.x *= -1
-            collision_splash = True
+            collision = True
 
         if self.pos.y < r:
             self.pos.y = r
             self.direction.y *= -1
-            collision_splash = True
+            collision = True
         elif self.pos.y > screen.get_height() - r:
             self.pos.y = screen.get_height() - r
             self.direction.y *= -1
-            collision_splash = True
-        return collision_splash
+            collision = True
+        return collision
 
-    def strings(self, collision_splash):
-        if collision_splash == True:
+    def strings(self, collision):
+        if collision == True:
             pygame.draw.circle(screen, '#f50000', self.pos, r*0.05) # Aufprall Effekt
             self.lines.append(pygame.math.Vector2(self.pos))
             print('test')
@@ -139,18 +140,22 @@ player_two = Player(
     "blue",
     (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
 )
-player_three = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_t, pygame.K_g, pygame.K_f, pygame.K_h),
-)
-player_four = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_i, pygame.K_k, pygame.K_j, pygame.K_l),
-)
  
-players = [player_one, player_two,player_three,player_four]
+players = [player_one, player_two]
+
+colors = ["red", "blue", "white", "yellow", "green", "purple", "orange", "cyan", "magenta", "gray"]
+
+for i in range(100):
+    x = random.uniform(0, screen.get_width())
+    y = random.uniform(0, screen.get_height())
+    # color = random.choice(colors)
+    color = 'black'
+    new_player = Player(
+        (x, y),
+        color,
+        (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),  # keine Tastatursteuerung für Extra-Spieler
+    )
+    players.append(new_player)
 
 while running:
     for event in pygame.event.get():
