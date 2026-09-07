@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 # pygame setup
 pygame.init()
@@ -15,6 +16,7 @@ brake_speed = 150 # 150
 accel_speed = 400 # 450 maybe better, but really not
 turn_rate = 180
 r = 20
+impact_zone_size = 60 # 90
 
 def move_towards(value, target, max_step):
     if value < target:
@@ -29,6 +31,8 @@ class Player:
         self.direction = pygame.math.Vector2(0,0)
         self.speed = player_speed
         self.lines = []
+        self.impact_zone = []
+        self.impact_timer = 0
 
     def direction_input(self, pressed):
         up, down, left, right = self.keys
@@ -64,34 +68,42 @@ class Player:
  
         self.pos += self.direction * self.speed * dt
         # self.collision_wall()
-        collision_splash = self.collision_wall()
-        self.strings(collision_splash)
+        collision = self.collision_wall()
+        self.strings(collision)
+        self.impact_timer -= dt
 
     def collision_wall(self):
-        collision_splash = False
+        collision = False
         if self.pos.x < r:
                 self.pos.x = r
                 self.direction.x *= -1
-                collision_splash = True
+                collision = True
+                self.impact_zone = [pygame.math.Vector2(0, y) for y in range(int(self.pos.y) - impact_zone_size, int(self.pos.y) + impact_zone_size)]
         elif self.pos.x > screen.get_width() - r:
             self.pos.x = screen.get_width() - r
             self.direction.x *= -1
-            collision_splash = True
+            collision = True
+            self.impact_zone = [pygame.math.Vector2(screen.get_width(), y) for y in range(int(self.pos.y) - impact_zone_size, int(self.pos.y) + impact_zone_size)]
 
         if self.pos.y < r:
             self.pos.y = r
             self.direction.y *= -1
-            collision_splash = True
+            collision = True
+            self.impact_zone = [pygame.math.Vector2(x, 0) for x in range(int(self.pos.x) - impact_zone_size, int(self.pos.x) + impact_zone_size)]
         elif self.pos.y > screen.get_height() - r:
             self.pos.y = screen.get_height() - r
             self.direction.y *= -1
-            collision_splash = True
-        return collision_splash
+            collision = True
+            self.impact_zone = [pygame.math.Vector2(x, screen.get_height()) for x in range(int(self.pos.x) - impact_zone_size, int(self.pos.x) + impact_zone_size)]
+        return collision
 
-    def strings(self, collision_splash):
-        if collision_splash == True:
-            pygame.draw.circle(screen, '#f50000', self.pos, r*0.05) # Aufprall Effekt
-            self.lines.append(pygame.math.Vector2(self.pos))
+    def strings(self, collision):
+        if collision == True:
+            self.impact_timer = 0.17
+            # self.lines.append(pygame.math.Vector2(self.pos))
+            for i in range(6):
+                self.lines.append(random.choice(self.impact_zone))
+                print('running')
             print('test')
 
     def draw(self, surface):
@@ -99,6 +111,8 @@ class Player:
             # x,y = self.pos
             pygame.draw.line(screen, self.color, line, self.pos, 2)
         pygame.draw.circle(surface, self.color, self.pos, r)
+        if self.impact_timer > 0:
+            pygame.draw.circle(surface, "#f85e5eb2", self.pos, r + 2, 3)
 #############################
 def line_distance(point, a, b):
     ab = b - a
@@ -139,18 +153,22 @@ player_two = Player(
     "blue",
     (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
 )
-player_three = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_t, pygame.K_g, pygame.K_f, pygame.K_h),
-)
-player_four = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_i, pygame.K_k, pygame.K_j, pygame.K_l),
-)
  
-players = [player_one, player_two,player_three,player_four]
+players = [player_one, player_two]
+
+colors = ["red", "blue", "white", "yellow", "green", "purple", "orange", "cyan", "magenta", "gray"]
+
+for i in range(100):
+    x = random.uniform(0, screen.get_width())
+    y = random.uniform(0, screen.get_height())
+    # color = random.choice(colors)
+    color = 'black'
+    new_player = Player(
+        (x, y),
+        color,
+        (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),  # keine Tastatursteuerung für Extra-Spieler
+    )
+    # players.append(new_player)
 
 while running:
     for event in pygame.event.get():
