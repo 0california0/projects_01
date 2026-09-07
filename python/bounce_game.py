@@ -3,16 +3,15 @@ import math
 
 # pygame setup
 pygame.init()
-# screen = pygame.display.set_mode((1280, 720))
-screen = pygame.display.set_mode((600, 300))
+screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
 dt = 0
 
 # global player vaiables
 player_speed = 300
-turn_speed = 100
-brake_speed = 150
+turn_speed = 275 # 100
+brake_speed = 150 # 150
 accel_speed = 400 # 450 maybe better, but really not
 turn_rate = 180
 r = 20
@@ -54,7 +53,7 @@ class Player:
             angle = self.direction.angle_to(target)
             angle = (angle + 180) % 360 - 180
  
-            max_step = turn_speed * dt
+            max_step = turn_rate * dt
             self.direction = self.direction.rotate(max(-max_step, min(max_step, angle)))
 
             self.speed = move_towards(self.speed, turn_speed, brake_speed * dt)
@@ -112,236 +111,15 @@ player_two = Player(
 player_three = Player(
     (screen.get_width() / 3, screen.get_height() / 2),
     "white",
-    (pygame.K_s, pygame.K_w, pygame.K_d, pygame.K_a),
+    (pygame.K_t, pygame.K_g, pygame.K_f, pygame.K_h),
 )
 player_four = Player(
     (screen.get_width() / 3 * 2, screen.get_height() / 2),
     "yellow",
-    (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s),
-)
-player_five = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "pink",
-    (pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_a),
-)
-player_six = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "green",
-    (pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_w),
-)
-a = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "red",
-    (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),
-)
-b = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "blue",
-    (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-)
-c = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_s, pygame.K_w, pygame.K_d, pygame.K_a),
-)
-d = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s),
-)
-e = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "pink",
-    (pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_a),
-)
-f = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "green",
-    (pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_w),
-)
-gee = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "red",
-    (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),
-)
-hee = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "blue",
-    (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-)
-iee = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_s, pygame.K_w, pygame.K_d, pygame.K_a),
-)
-jee = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s),
-)
-kee = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "pink",
-    (pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_a),
-)
-lee = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "green",
-    (pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_w),
-)
-mee = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "red",
-    (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),
-)
-nee = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "blue",
-    (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-)
-oee = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_s, pygame.K_w, pygame.K_d, pygame.K_a),
-)
-pee = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s),
-)
-qee = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "pink",
-    (pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_a),
-)
-ree = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "green",
-    (pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_w),
-)
-
-players1 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "red",
-    (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),
-)
-players2 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "blue",
-    (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-)
-players3 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_s, pygame.K_w, pygame.K_d, pygame.K_a),
-)
-players4 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s),
-)
-players5 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "pink",
-    (pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_a),
-)
-players6 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "green",
-    (pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_w),
-)
-players7 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "red",
-    (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),
-)
-players8 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "blue",
-    (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-)
-players9 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_s, pygame.K_w, pygame.K_d, pygame.K_a),
-)
-players10 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s),
-)
-players11 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "pink",
-    (pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_a),
-)
-players12 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "green",
-    (pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_w),
-)
-players13 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "red",
-    (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),
-)
-players14 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "blue",
-    (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-)
-players15 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_s, pygame.K_w, pygame.K_d, pygame.K_a),
-)
-players16 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s),
-)
-players17 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "pink",
-    (pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_a),
-)
-players18 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "green",
-    (pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_w),
-)
-players19 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "red",
-    (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),
-)
-players20 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "blue",
-    (pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT),
-)
-players21 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "white",
-    (pygame.K_s, pygame.K_w, pygame.K_d, pygame.K_a),
-)
-players22 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "yellow",
-    (pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s),
-)
-players23 = Player(
-    (screen.get_width() / 3, screen.get_height() / 2),
-    "pink",
-    (pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_a),
-)
-players24 = Player(
-    (screen.get_width() / 3 * 2, screen.get_height() / 2),
-    "green",
-    (pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_w),
+    (pygame.K_i, pygame.K_k, pygame.K_j, pygame.K_l),
 )
  
-players = [player_one, player_two,player_three,player_four,player_five,player_six,a,b,c,d,e,f,gee,hee,iee,jee,kee,lee,mee,nee,oee,pee,qee,ree,players12,players13,players14,players15,players16,players17,players18,players19,players20,players21,players22,players23,players24]
+players = [player_one, player_two,player_three,player_four]
 
 while running:
     for event in pygame.event.get():
