@@ -16,6 +16,7 @@ brake_speed = 150 # 150
 accel_speed = 400 # 450 maybe better, but really not
 turn_rate = 180
 r = 5
+impact_zone_size = 60
 
 def move_towards(value, target, max_step):
     if value < target:
@@ -30,6 +31,7 @@ class Player:
         self.direction = pygame.math.Vector2(0,0)
         self.speed = player_speed
         self.lines = []
+        self.impact_zone = []
 
     def direction_input(self, pressed):
         up, down, left, right = self.keys
@@ -74,25 +76,32 @@ class Player:
                 self.pos.x = r
                 self.direction.x *= -1
                 collision = True
+                self.impact_zone = [pygame.math.Vector2(0, y) for y in range(int(self.pos.y) - impact_zone_size, int(self.pos.y) + impact_zone_size)]
         elif self.pos.x > screen.get_width() - r:
             self.pos.x = screen.get_width() - r
             self.direction.x *= -1
             collision = True
+            self.impact_zone = [pygame.math.Vector2(screen.get_width(), y) for y in range(int(self.pos.y) - impact_zone_size, int(self.pos.y) + impact_zone_size)]
 
         if self.pos.y < r:
             self.pos.y = r
             self.direction.y *= -1
             collision = True
+            self.impact_zone = [pygame.math.Vector2(x, 0) for x in range(int(self.pos.x) - impact_zone_size, int(self.pos.x) + impact_zone_size)]
         elif self.pos.y > screen.get_height() - r:
             self.pos.y = screen.get_height() - r
             self.direction.y *= -1
             collision = True
+            self.impact_zone = [pygame.math.Vector2(x, screen.get_height()) for x in range(int(self.pos.x) - impact_zone_size, int(self.pos.x) + impact_zone_size)]
         return collision
 
     def strings(self, collision):
         if collision == True:
             pygame.draw.circle(screen, '#f50000', self.pos, r*0.05) # Aufprall Effekt
-            self.lines.append(pygame.math.Vector2(self.pos))
+            # self.lines.append(pygame.math.Vector2(self.pos))
+            for i in range(6):
+                self.lines.append(random.choice(self.impact_zone))
+                print('running')
             print('test')
 
     def draw(self, surface):
@@ -155,7 +164,7 @@ for i in range(100):
         color,
         (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d),  # keine Tastatursteuerung für Extra-Spieler
     )
-    players.append(new_player)
+    # players.append(new_player)
 
 while running:
     for event in pygame.event.get():
