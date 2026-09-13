@@ -19,7 +19,7 @@ brake_speed = 150 # 150
 accel_speed = 400 # 450 maybe better, but really not
 turn_rate = 180
 r = 20
-impact_zone_size = 60 # 90
+impact_zone_size = 90 # 60, 200+ for higher difficulty
 
 def move_towards(value, target, max_step):
     if value < target:
@@ -38,6 +38,8 @@ class Player:
         self.impact_timer = 0
         self.score = 0
         self.has_lines = False
+        self.lines_wiped = False
+        self.wipe_counter = 0
 
     def direction_input(self, pressed):
         up, down, left, right = self.keys
@@ -109,8 +111,8 @@ class Player:
             # self.lines.append(pygame.math.Vector2(self.pos))
             for i in range(6):
                 self.lines.append(random.choice(self.impact_zone))
-                print('running')    
-            print('test')
+                # print('running')    
+            # print('test')
 
     def draw(self, surface):
         for line in self.lines:
@@ -132,12 +134,19 @@ def cut_lines(player, other):
     for line in other.lines[:]:
         if line_distance(player.pos, line, other.pos) <= r:
             other.lines.remove(line)
+            other.lines_wiped = True
+        player.lines_wiped = False
 #############################
 def score(player, other):
     if other.has_lines and not other.lines:
         player.score += 1
         other.has_lines = False
         print('empty')
+
+def wipe(player, other):
+    if other.lines_wiped == True:
+        player.wipe_counter += 1
+        other.lines_wiped = False
 
 def collision_player(a, b):
         delta = b.pos - a.pos
@@ -202,14 +211,20 @@ while running:
             if a is not b:
                 cut_lines(a, b)
                 score(a, b)
+                wipe(a, b)
  
     for player in players:
         player.draw(screen)
 
-    score_text = font.render(f"Score: {player_one.score}", True, player_one.color)
+    score_text_one = font.render(f"Score: {player_one.score}", True, player_one.color)
     score_text_two = font.render(f"Score: {player_two.score}", True, player_two.color)
-    screen.blit(score_text, (10, 10))
+    screen.blit(score_text_one, (10, 10))
     screen.blit(score_text_two, (10, 40))
+
+    lines_wiped_one = font.render(f"Cuts: {player_one.wipe_counter}", True, player_one.color)
+    lines_wiped_two = font.render(f"Cuts: {player_two.wipe_counter}", True, player_two.color)
+    screen.blit(lines_wiped_one, (170, 10))
+    screen.blit(lines_wiped_two, (170, 40))
  
     pygame.display.flip()
  
